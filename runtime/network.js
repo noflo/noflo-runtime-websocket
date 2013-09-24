@@ -1,7 +1,7 @@
 var WebSocketServer = require('websocket').server;
 var Base = require('noflo-runtime-base');
 
-function WebSocketRuntime () {
+function WebSocketRuntime (options) {
   this.prototype.constructor.apply(this, arguments);
   this.receive = this.prototype.receive;
 }
@@ -17,12 +17,12 @@ WebSocketRuntime.prototype.send = function (protocol, topic, payload, context) {
   }));
 };
 
-module.exports = function (httpServer) {
+module.exports = function (httpServer, options) {
   var wsServer = new WebSocketServer({
     httpServer: httpServer
   });
 
-  var runtime = new WebSocketRuntime();
+  var runtime = new WebSocketRuntime(options);
   var handleMessage = function (message, connection) {
     if (message.type == 'utf8') {
       try {
