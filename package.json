@@ -20,5 +20,6 @@
     "grunt-contrib-watch": "~0.5.3",
     "chai": "~1.8.0",
     "noflo-core": "~0.1.2"
-  }
+  },
+  "main": "./runtime/network.js"
 }
