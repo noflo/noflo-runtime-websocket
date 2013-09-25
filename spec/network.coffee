@@ -191,7 +191,7 @@ describe 'WebSocket network runtime', ->
           chai.expect(message.utf8Data).to.be.a 'string'
           msg = JSON.parse message.utf8Data
           chai.expect(msg.protocol).to.equal 'network'
-          unless msg.command is 'start'
+          unless msg.command is 'started'
             connection.once 'message', listener
           else
             chai.expect(msg.payload).to.be.a 'string'
