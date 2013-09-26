@@ -2,6 +2,22 @@ var WebSocketServer = require('websocket').server;
 var Base = require('noflo-runtime-base');
 
 function WebSocketRuntime (options) {
+  if (!options) {
+    options = {};
+  }
+  this.connections = [];
+  if (options.catchExceptions) {
+    process.on('uncaughtException', function (err) {
+      this.connections.forEach(function (connection) {
+        this.send('network', 'error', {
+          message: err.toString()
+        }, {
+          connection: connection
+        });
+      }.bind(this));
+    }.bind(this));
+  }
+
   this.prototype.constructor.apply(this, arguments);
   this.receive = this.prototype.receive;
 }
@@ -38,8 +54,15 @@ module.exports = function (httpServer, options) {
 
   wsServer.on('request', function (request) {
     var connection = request.accept('noflo', request.origin);
+    runtime.connections.push(connection);
     connection.on('message', function (message) {
       handleMessage(message, connection);
+    });
+    connection.on('close', function () {
+      if (runtime.connections.indexOf(connection) === -1) {
+        return;
+      }
+      runtime.connections.splice(runtime.connections.indexOf(connection), 1);
     });
   });
 };
