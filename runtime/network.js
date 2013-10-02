@@ -18,6 +18,10 @@ function WebSocketRuntime (options) {
     }.bind(this));
   }
 
+  if (options.captureOutput) {
+    this.startCapture();
+  }
+
   this.prototype.constructor.apply(this, arguments);
   this.receive = this.prototype.receive;
 }
@@ -31,6 +35,26 @@ WebSocketRuntime.prototype.send = function (protocol, topic, payload, context) {
     command: topic,
     payload: payload
   }));
+};
+
+WebSocketRuntime.prototype.startCapture = function () {
+  this.originalStdOut = process.stdout.write;
+  process.stdout.write = function (string, encoding, fd) {
+    this.connections.forEach(function (connection) {
+      this.send('network', 'output', {
+        message: string.replace(/\n$/, '')
+      }, {
+        connection: connection
+      });
+    }.bind(this));
+  }.bind(this);
+};
+
+WebSocketRuntime.prototype.stopCapture = function () {
+  if (!this.originalStdOut) {
+    return;
+  }
+  process.stdout.write = this.originalStdOut;
 };
 
 module.exports = function (httpServer, options) {
@@ -65,4 +89,6 @@ module.exports = function (httpServer, options) {
       runtime.connections.splice(runtime.connections.indexOf(connection), 1);
     });
   });
+
+  return runtime;
 };

@@ -8,9 +8,10 @@ describe 'WebSocket network runtime', ->
   client = null
   connection = null
   send = null
+  rt = null
   before (done) ->
     server = http.createServer ->
-    runtime server
+    rt = runtime server
     server.listen 8080, ->
       client = new WebSocketClient
       client.on 'connect', (conn) ->
@@ -199,6 +200,21 @@ describe 'WebSocket network runtime', ->
         connection.once 'message', listener
         send 'network', 'start',
           baseDir: process.cwd()
+
+    describe 'on console output', ->
+      it 'should be able to capture and transmit it', (done) ->
+        listener = (message) ->
+          rt.stopCapture()
+          chai.expect(message.utf8Data).to.be.a 'string'
+          msg = JSON.parse message.utf8Data
+          chai.expect(msg.protocol).to.equal 'network'
+          chai.expect(msg.command).to.equal 'output'
+          chai.expect(msg.payload).to.be.an 'object'
+          chai.expect(msg.payload.message).to.equal 'Hello, World!'
+          done()
+        connection.once 'message', listener
+        rt.startCapture()
+        console.log 'Hello, World!'
 
   describe 'Component protocol', ->
     describe 'on requesting a component list', ->
