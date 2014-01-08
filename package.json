@@ -1,7 +1,7 @@
 {
   "name": "noflo-runtime-websocket",
   "description": "NoFlo runtime for execution on Node.js over WebSockets",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "author": {
     "name": "Henri Bergius",
     "email": "henri.bergius@iki.fi"
@@ -11,12 +11,12 @@
     "url": "git://github.com/noflo/noflo-runtime-websocket.git"
   },
   "dependencies": {
-    "noflo-runtime-base": "~0.1.5",
+    "noflo-runtime-base": "~0.2.1",
     "websocket": "~1.0.8"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
-    "grunt-cafe-mocha": "~0.1.8",
+    "grunt-cafe-mocha": "~0.1.10",
     "grunt-contrib-watch": "~0.5.3",
     "chai": "~1.8.0",
     "noflo-core": "~0.1.2"

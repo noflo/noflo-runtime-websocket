@@ -50,6 +50,7 @@ describe 'WebSocket network runtime', ->
               component: 'core/Repeat'
               metadata:
                 hello: 'World'
+              graph: 'foo'
           ,
             protocol: 'graph'
             command: 'addnode'
@@ -57,10 +58,12 @@ describe 'WebSocket network runtime', ->
               id: 'Bar'
               component: 'core/Drop'
               metadata: {}
+              graph: 'foo'
         ]
         receive expects, done
         send 'graph', 'clear',
           baseDir: process.cwd()
+          id: 'foo'
         send 'graph', 'addnode', expects[0].payload
         send 'graph', 'addnode', expects[1].payload
     describe 'receiving an edge', ->
@@ -77,6 +80,7 @@ describe 'WebSocket network runtime', ->
               port: 'in'
             metadata:
               route: 5
+            graph: 'foo'
         ]
         receive expects, done
         send 'graph', 'addedge', expects[0].payload
@@ -92,6 +96,7 @@ describe 'WebSocket network runtime', ->
               node: 'Foo'
               port: 'in'
             metadata: {}
+            graph: 'foo'
         ]
         receive expects, done
         send 'graph', 'addinitial', expects[0].payload
@@ -109,6 +114,7 @@ describe 'WebSocket network runtime', ->
               port: 'in'
             metadata:
               route: 5
+            graph: 'foo'
         ,
           protocol: 'graph'
           command: 'removenode'
@@ -116,10 +122,12 @@ describe 'WebSocket network runtime', ->
             id: 'Bar'
             component: 'core/Drop'
             metadata: {}
+            graph: 'foo'
         ]
         receive expects, done
         send 'graph', 'removenode',
           id: 'Bar'
+          graph: 'foo'
     describe 'removing an IIP', ->
       it 'should provide the IIP back', (done) ->
         expects = [
@@ -132,12 +140,14 @@ describe 'WebSocket network runtime', ->
               node: 'Foo'
               port: 'in'
             metadata: {}
+            graph: 'foo'
         ]
         receive expects, done
         send 'graph', 'removeinitial',
           to:
             node: 'Foo'
             port: 'in'
+          graph: 'foo'
     describe 'renaming a node', ->
       it 'should send the renamenode event', (done) ->
         expects = [
@@ -146,11 +156,13 @@ describe 'WebSocket network runtime', ->
           payload:
             from: 'Foo'
             to: 'Baz'
+            graph: 'foo'
         ]
         receive expects, done
         send 'graph', 'renamenode',
           from: 'Foo'
           to: 'Baz'
+          graph: 'foo'
 
   describe 'Network protocol', ->
     # Set up a clean graph
@@ -165,14 +177,17 @@ describe 'WebSocket network runtime', ->
       connection.once 'message', listener
       send 'graph', 'clear',
         baseDir: process.cwd()
+        id: 'bar'
       send 'graph', 'addnode',
         id: 'Hello'
         component: 'core/Repeat'
         metadata: {}
+        graph: 'bar'
       send 'graph', 'addnode',
         id: 'World'
         component: 'core/Drop'
         metadata: {}
+        graph: 'bar'
       send 'graph', 'addedge',
         from:
           node: 'Hello'
@@ -180,12 +195,14 @@ describe 'WebSocket network runtime', ->
         to:
           node: 'World'
           port: 'in'
+        graph: 'bar'
       send 'graph', 'addinitial',
         from:
           data: 'Hello, world!'
         to:
           node: 'Hello'
           port: 'in'
+        graph: 'bar'
     describe 'on starting the network', ->
       it 'should get started', (done) ->
         listener = (message) ->
@@ -195,11 +212,14 @@ describe 'WebSocket network runtime', ->
           unless msg.command is 'started'
             connection.once 'message', listener
           else
-            chai.expect(msg.payload).to.be.a 'string'
+            chai.expect(msg.payload).to.be.an 'object'
+            chai.expect(msg.payload.graph).to.equal 'bar'
+            chai.expect(msg.payload.time).to.be.a 'string'
             done()
         connection.once 'message', listener
         send 'network', 'start',
           baseDir: process.cwd()
+          graph: 'bar'
 
     describe 'on console output', ->
       it 'should be able to capture and transmit it', (done) ->
@@ -230,13 +250,16 @@ describe 'WebSocket network runtime', ->
             chai.expect(msg.payload.inPorts).to.eql [
               id: 'in'
               type: 'all'
+              array: false
             ,
               id: 'options'
               type: 'all'
+              array: false
             ]
             chai.expect(msg.payload.outPorts).to.eql [
               id: 'out'
               type: 'all'
+              array: false
             ]
             done()
         connection.once 'message', listener
