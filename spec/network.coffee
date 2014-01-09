@@ -72,10 +72,10 @@ describe 'WebSocket network runtime', ->
           protocol: 'graph'
           command: 'addedge'
           payload:
-            from:
+            src:
               node: 'Foo'
               port: 'out'
-            to:
+            tgt:
               node: 'Bar'
               port: 'in'
             metadata:
@@ -90,9 +90,9 @@ describe 'WebSocket network runtime', ->
           protocol: 'graph'
           command: 'addinitial'
           payload:
-            from:
+            src:
               data: 'Hello, world!'
-            to:
+            tgt:
               node: 'Foo'
               port: 'in'
             metadata: {}
@@ -106,10 +106,10 @@ describe 'WebSocket network runtime', ->
           protocol: 'graph'
           command: 'removeedge'
           payload:
-            from:
+            src:
               node: 'Foo'
               port: 'out'
-            to:
+            tgt:
               node: 'Bar'
               port: 'in'
             metadata:
@@ -134,9 +134,9 @@ describe 'WebSocket network runtime', ->
           protocol: 'graph'
           command: 'removeinitial'
           payload:
-            from:
+            src:
               data: 'Hello, world!'
-            to:
+            tgt:
               node: 'Foo'
               port: 'in'
             metadata: {}
@@ -144,7 +144,7 @@ describe 'WebSocket network runtime', ->
         ]
         receive expects, done
         send 'graph', 'removeinitial',
-          to:
+          tgt:
             node: 'Foo'
             port: 'in'
           graph: 'foo'
@@ -189,17 +189,17 @@ describe 'WebSocket network runtime', ->
         metadata: {}
         graph: 'bar'
       send 'graph', 'addedge',
-        from:
+        src:
           node: 'Hello'
           port: 'out'
-        to:
+        tgt:
           node: 'World'
           port: 'in'
         graph: 'bar'
       send 'graph', 'addinitial',
-        from:
+        src:
           data: 'Hello, world!'
-        to:
+        tgt:
           node: 'Hello'
           port: 'in'
         graph: 'bar'
