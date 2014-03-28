@@ -1,6 +1,7 @@
 chai = require 'chai'
 runtime = require '../runtime/network.js'
 http = require 'http'
+path = require 'path'
 WebSocketClient = require('websocket').client
 
 describe 'WebSocket network runtime', ->
@@ -11,7 +12,8 @@ describe 'WebSocket network runtime', ->
   rt = null
   before (done) ->
     server = http.createServer ->
-    rt = runtime server
+    rt = runtime server,
+      baseDir: path.resolve __dirname, '../'
     server.listen 8080, ->
       client = new WebSocketClient
       client.on 'connect', (conn) ->
