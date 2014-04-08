@@ -41,6 +41,19 @@ describe 'WebSocket network runtime', ->
         done()
     connection.once 'message', listener
 
+  describe 'Runtime Protocol', ->
+    describe 'requesting runtime metadata', ->
+      it 'should provide it back', (done) ->
+        connection.once 'message', (message) ->
+          msg = JSON.parse message.utf8Data
+          chai.expect(msg.protocol).to.equal 'runtime'
+          chai.expect(msg.command).to.equal 'runtime'
+          chai.expect(msg.payload).to.be.an 'object'
+          chai.expect(msg.payload.type).to.equal 'noflo-nodejs'
+          chai.expect(msg.payload.capabilities).to.be.an 'array'
+          done()
+        send 'runtime', 'getruntime', ''
+
   describe 'Graph Protocol', ->
     describe 'receiving a graph and nodes', ->
       it 'should provide the nodes back', (done) ->
