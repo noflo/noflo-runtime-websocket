@@ -64,8 +64,9 @@ describe 'WebSocket network runtime', ->
         ]
         receive expects, done
         send 'graph', 'clear',
-          baseDir: process.cwd()
+          baseDir: path.resolve __dirname, '../'
           id: 'foo'
+          main: true
         send 'graph', 'addnode', expects[0].payload
         send 'graph', 'addnode', expects[1].payload
     describe 'receiving an edge', ->
@@ -178,8 +179,9 @@ describe 'WebSocket network runtime', ->
           done()
       connection.once 'message', listener
       send 'graph', 'clear',
-        baseDir: process.cwd()
+        baseDir: path.resolve __dirname, '../'
         id: 'bar'
+        main: true
       send 'graph', 'addnode',
         id: 'Hello'
         component: 'core/Repeat'
@@ -220,7 +222,6 @@ describe 'WebSocket network runtime', ->
             done()
         connection.once 'message', listener
         send 'network', 'start',
-          baseDir: process.cwd()
           graph: 'bar'
 
     describe 'on console output', ->
@@ -249,19 +250,26 @@ describe 'WebSocket network runtime', ->
           unless msg.payload.name is 'core/Output'
             connection.once 'message', listener
           else
-            chai.expect(msg.payload.inPorts).to.eql [
+            expectedInPorts = [
               id: 'in'
               type: 'all'
-              array: false
+              required: true
+              addressable: true
+              description: ''
             ,
               id: 'options'
-              type: 'all'
-              array: false
+              type: 'object'
+              required: true
+              addressable: false
+              description: ''
             ]
+            chai.expect(msg.payload.inPorts).to.eql expectedInPorts
             chai.expect(msg.payload.outPorts).to.eql [
               id: 'out'
               type: 'all'
-              array: false
+              required: true
+              addressable: false
+              description: ''
             ]
             done()
         connection.once 'message', listener

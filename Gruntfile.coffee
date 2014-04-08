@@ -13,7 +13,7 @@ module.exports = ->
       nodejs:
         src: ['spec/*.coffee']
         options:
-          reporter: 'dot'
+          reporter: 'spec'
 
   # Grunt plugins used for testing
   @loadNpmTasks 'grunt-contrib-watch'
