@@ -267,14 +267,14 @@ describe 'WebSocket network runtime', ->
               id: 'in'
               type: 'all'
               required: true
-              addressable: true
-              description: ''
+              addressable: false
+              description: 'Packet to be printed through console.log'
             ,
               id: 'options'
               type: 'object'
               required: true
               addressable: false
-              description: ''
+              description: 'Options to be passed to console.log'
             ]
             chai.expect(msg.payload.inPorts).to.eql expectedInPorts
             chai.expect(msg.payload.outPorts).to.eql [
@@ -282,7 +282,6 @@ describe 'WebSocket network runtime', ->
               type: 'all'
               required: true
               addressable: false
-              description: ''
             ]
             done()
         connection.once 'message', listener
