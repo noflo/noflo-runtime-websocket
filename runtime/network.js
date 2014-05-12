@@ -30,6 +30,11 @@ WebSocketRuntime.prototype.send = function (protocol, topic, payload, context) {
   if (!context.connection || !context.connection.connected) {
     return;
   }
+  if (command === 'error' && payload instanceof Error) {
+    payload = {
+      message: payload.message
+    };
+  }
   context.connection.sendUTF(JSON.stringify({
     protocol: protocol,
     command: topic,
@@ -65,8 +70,9 @@ module.exports = function (httpServer, options) {
   var runtime = new WebSocketRuntime(options);
   var handleMessage = function (message, connection) {
     if (message.type == 'utf8') {
+      var contents;
       try {
-        var contents = JSON.parse(message.utf8Data);
+        contents = JSON.parse(message.utf8Data);
       } catch (e) {
         return;
       }
