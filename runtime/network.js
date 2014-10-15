@@ -42,6 +42,22 @@ WebSocketRuntime.prototype.send = function (protocol, topic, payload, context) {
   }));
 };
 
+WebSocketRuntime.prototype.sendAll = function (protocol, topic, payload, context) {
+
+  if (topic === 'error' && payload instanceof Error) {
+    payload = {
+      message: payload.message
+    };
+  }
+  this.connections.forEach(function(connection) {
+    connection.sendUTF(JSON.stringify({
+        protocol: protocol,
+        command: topic,
+        payload: payload
+    }));
+  });
+};
+
 WebSocketRuntime.prototype.startCapture = function () {
   this.originalStdOut = process.stdout.write;
   process.stdout.write = function (string, encoding, fd) {
