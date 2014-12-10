@@ -99,7 +99,8 @@ module.exports = function (httpServer, options) {
   };
 
   wsServer.on('request', function (request) {
-    var connection = request.accept('noflo', request.origin);
+    var subProtocol = (request.requestedProtocols.indexOf("noflo") != -1) ? "noflo" : null;
+    var connection = request.accept(subProtocol, request.origin);
     runtime.connections.push(connection);
     connection.on('message', function (message) {
       handleMessage(message, connection);
