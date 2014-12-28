@@ -59,6 +59,14 @@ describe 'WebSocket network runtime', ->
       it 'should provide the nodes back', (done) ->
         expects = [
             protocol: 'graph'
+            command: 'clear',
+            payload: 
+              baseDir: path.resolve __dirname, '../'
+              id: 'foo'
+              main: true
+              name: 'NoFlo runtime'
+          ,
+            protocol: 'graph'
             command: 'addnode'
             payload:
               id: 'Foo'
@@ -80,8 +88,8 @@ describe 'WebSocket network runtime', ->
           baseDir: path.resolve __dirname, '../'
           id: 'foo'
           main: true
-        send 'graph', 'addnode', expects[0].payload
         send 'graph', 'addnode', expects[1].payload
+        send 'graph', 'addnode', expects[2].payload
     describe 'receiving an edge', ->
       it 'should provide the edge back', (done) ->
         expects = [
@@ -120,6 +128,19 @@ describe 'WebSocket network runtime', ->
       it 'should remove the node and its associated edges', (done) ->
         expects = [
           protocol: 'graph'
+          command: 'changeedge'
+          payload:
+            src:
+              node: 'Foo'
+              port: 'out'
+            tgt:
+              node: 'Bar'
+              port: 'in'
+            metadata:
+              route: 5
+            graph: 'foo'
+        ,
+          protocol: 'graph'
           command: 'removeedge'
           payload:
             src:
@@ -130,6 +151,13 @@ describe 'WebSocket network runtime', ->
               port: 'in'
             metadata:
               route: 5
+            graph: 'foo'
+        ,
+          protocol: 'graph'
+          command: 'changenode'
+          payload:
+            id: 'Bar'
+            metadata: {}
             graph: 'foo'
         ,
           protocol: 'graph'
@@ -266,13 +294,13 @@ describe 'WebSocket network runtime', ->
             expectedInPorts = [
               id: 'in'
               type: 'all'
-              required: true
+              required: false
               addressable: false
               description: 'Packet to be printed through console.log'
             ,
               id: 'options'
               type: 'object'
-              required: true
+              required: false
               addressable: false
               description: 'Options to be passed to console.log'
             ]
@@ -280,7 +308,7 @@ describe 'WebSocket network runtime', ->
             chai.expect(msg.payload.outPorts).to.eql [
               id: 'out'
               type: 'all'
-              required: true
+              required: false
               addressable: false
             ]
             done()
