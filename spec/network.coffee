@@ -4,6 +4,12 @@ http = require 'http'
 path = require 'path'
 WebSocketClient = require('websocket').client
 
+check = (done, f) ->
+  try
+    f()
+  catch e
+    done e
+
 describe 'WebSocket network runtime', ->
   server = null
   client = null
@@ -31,27 +37,29 @@ describe 'WebSocket network runtime', ->
 
   receive = (expects, done) ->
     listener = (message) ->
-      chai.expect(message.utf8Data).to.be.a 'string'
-      msg = JSON.parse message.utf8Data
-      expected = expects.shift()
-      chai.expect(msg).to.eql expected
-      if expects.length
-        connection.once 'message', listener
-      else
-        done()
+      check done, ->
+        chai.expect(message.utf8Data).to.be.a 'string'
+        msg = JSON.parse message.utf8Data
+        expected = expects.shift()
+        chai.expect(msg).to.eql expected
+        if expects.length
+          connection.once 'message', listener
+        else
+          done()
     connection.once 'message', listener
 
   describe 'Runtime Protocol', ->
     describe 'requesting runtime metadata', ->
       it 'should provide it back', (done) ->
         connection.once 'message', (message) ->
-          msg = JSON.parse message.utf8Data
-          chai.expect(msg.protocol).to.equal 'runtime'
-          chai.expect(msg.command).to.equal 'runtime'
-          chai.expect(msg.payload).to.be.an 'object'
-          chai.expect(msg.payload.type).to.equal 'noflo-nodejs'
-          chai.expect(msg.payload.capabilities).to.be.an 'array'
-          done()
+          check done, ->
+            msg = JSON.parse message.utf8Data
+            chai.expect(msg.protocol).to.equal 'runtime'
+            chai.expect(msg.command).to.equal 'runtime'
+            chai.expect(msg.payload).to.be.an 'object'
+            chai.expect(msg.payload.type).to.equal 'noflo-nodejs'
+            chai.expect(msg.payload.capabilities).to.be.an 'array'
+            done()
         send 'runtime', 'getruntime', ''
 
   describe 'Graph Protocol', ->
@@ -251,16 +259,17 @@ describe 'WebSocket network runtime', ->
     describe 'on starting the network', ->
       it 'should get started', (done) ->
         listener = (message) ->
-          chai.expect(message.utf8Data).to.be.a 'string'
-          msg = JSON.parse message.utf8Data
-          chai.expect(msg.protocol).to.equal 'network'
-          unless msg.command is 'started'
-            connection.once 'message', listener
-          else
-            chai.expect(msg.payload).to.be.an 'object'
-            chai.expect(msg.payload.graph).to.equal 'bar'
-            chai.expect(msg.payload.time).to.be.a 'string'
-            done()
+          check done, ->
+            chai.expect(message.utf8Data).to.be.a 'string'
+            msg = JSON.parse message.utf8Data
+            chai.expect(msg.protocol).to.equal 'network'
+            unless msg.command is 'started'
+              connection.once 'message', listener
+            else
+              chai.expect(msg.payload).to.be.an 'object'
+              chai.expect(msg.payload.graph).to.equal 'bar'
+              chai.expect(msg.payload.time).to.be.a 'string'
+              done()
         connection.once 'message', listener
         send 'network', 'start',
           graph: 'bar'
@@ -268,14 +277,15 @@ describe 'WebSocket network runtime', ->
     describe 'on console output', ->
       it 'should be able to capture and transmit it', (done) ->
         listener = (message) ->
-          rt.stopCapture()
-          chai.expect(message.utf8Data).to.be.a 'string'
-          msg = JSON.parse message.utf8Data
-          chai.expect(msg.protocol).to.equal 'network'
-          chai.expect(msg.command).to.equal 'output'
-          chai.expect(msg.payload).to.be.an 'object'
-          chai.expect(msg.payload.message).to.equal 'Hello, World!'
-          done()
+          check done, ->
+            rt.stopCapture()
+            chai.expect(message.utf8Data).to.be.a 'string'
+            msg = JSON.parse message.utf8Data
+            chai.expect(msg.protocol).to.equal 'network'
+            chai.expect(msg.command).to.equal 'output'
+            chai.expect(msg.payload).to.be.an 'object'
+            chai.expect(msg.payload.message).to.equal 'Hello, World!'
+            done()
         connection.once 'message', listener
         rt.startCapture()
         console.log 'Hello, World!'
@@ -284,33 +294,34 @@ describe 'WebSocket network runtime', ->
     describe 'on requesting a component list', ->
       it 'should receive some known components', (done) ->
         listener = (message) ->
-          chai.expect(message.utf8Data).to.be.a 'string'
-          msg = JSON.parse message.utf8Data
-          chai.expect(msg.protocol).to.equal 'component'
-          chai.expect(msg.payload).to.be.an 'object'
-          unless msg.payload.name is 'core/Output'
-            connection.once 'message', listener
-          else
-            expectedInPorts = [
-              id: 'in'
-              type: 'all'
-              required: false
-              addressable: false
-              description: 'Packet to be printed through console.log'
-            ,
-              id: 'options'
-              type: 'object'
-              required: false
-              addressable: false
-              description: 'Options to be passed to console.log'
-            ]
-            chai.expect(msg.payload.inPorts).to.eql expectedInPorts
-            chai.expect(msg.payload.outPorts).to.eql [
-              id: 'out'
-              type: 'all'
-              required: false
-              addressable: false
-            ]
-            done()
+          check done, ->
+            chai.expect(message.utf8Data).to.be.a 'string'
+            msg = JSON.parse message.utf8Data
+            chai.expect(msg.protocol).to.equal 'component'
+            chai.expect(msg.payload).to.be.an 'object'
+            unless msg.payload.name is 'core/Output'
+              connection.once 'message', listener
+            else
+              expectedInPorts = [
+                id: 'in'
+                type: 'all'
+                required: false
+                addressable: false
+                description: 'Packet to be printed through console.log'
+              ,
+                id: 'options'
+                type: 'object'
+                required: false
+                addressable: false
+                description: 'Options to be passed to console.log'
+              ]
+              chai.expect(msg.payload.inPorts).to.eql expectedInPorts
+              chai.expect(msg.payload.outPorts).to.eql [
+                id: 'out'
+                type: 'all'
+                required: false
+                addressable: false
+              ]
+              done()
         connection.once 'message', listener
         send 'component', 'list', process.cwd()
