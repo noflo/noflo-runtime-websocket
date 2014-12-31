@@ -312,7 +312,7 @@ describe 'WebSocket network runtime', ->
 
   describe 'Network protocol', ->
     # Set up a clean graph
-    before (done) ->
+    beforeEach (done) ->
       waitFor = 4
       listener = (message) ->
         waitFor--
@@ -395,37 +395,37 @@ describe 'WebSocket network runtime', ->
         receive expects, done
         send 'network', 'getstatus',
           graph: 'bar'
-    describe 'on stopping the network', ->
-      it 'should be stopped', (done) ->
-        listener = (message) ->
-          check done, ->
-            chai.expect(message.utf8Data).to.be.a 'string'
-            msg = JSON.parse message.utf8Data
-            chai.expect(msg.protocol).to.equal 'network'
-            unless msg.command is 'stopped'
-              connection.once 'message', listener
-            else
-              chai.expect(msg.payload).to.be.an 'object'
-              chai.expect(msg.payload.graph).to.equal 'bar'
-              chai.expect(msg.payload.time).to.be.a 'string'
-              chai.expect(msg.payload.running).to.equal false
-              chai.expect(msg.payload.started).to.equal false
-              done()
-        connection.once 'message', listener
-        send 'network', 'stop',
-          graph: 'bar'
-      it "should provide a 'stopped' status", (done) ->
-        expects = [
-          protocol: 'network'
-          command: 'status'
-          payload:
+      describe 'on stopping the network', ->
+        it 'should be stopped', (done) ->
+          listener = (message) ->
+            check done, ->
+              chai.expect(message.utf8Data).to.be.a 'string'
+              msg = JSON.parse message.utf8Data
+              chai.expect(msg.protocol).to.equal 'network'
+              unless msg.command is 'stopped'
+                connection.once 'message', listener
+              else
+                chai.expect(msg.payload).to.be.an 'object'
+                chai.expect(msg.payload.graph).to.equal 'bar'
+                chai.expect(msg.payload.time).to.be.a 'string'
+                chai.expect(msg.payload.running).to.equal false
+                chai.expect(msg.payload.started).to.equal false
+                done()
+          connection.once 'message', listener
+          send 'network', 'stop',
             graph: 'bar'
-            running: false
-            started: false
-        ]
-        receive expects, done
-        send 'network', 'getstatus',
-          graph: 'bar'
+        it "should provide a 'stopped' status", (done) ->
+          expects = [
+            protocol: 'network'
+            command: 'status'
+            payload:
+              graph: 'bar'
+              running: false
+              started: false
+          ]
+          receive expects, done
+          send 'network', 'getstatus',
+            graph: 'bar'
     describe 'on console output', ->
       it 'should be able to capture and transmit it', (done) ->
         listener = (message) ->
