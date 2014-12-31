@@ -63,7 +63,7 @@ describe 'WebSocket network runtime', ->
         send 'runtime', 'getruntime', ''
 
   describe 'Graph Protocol', ->
-    describe 'receiving a graph and nodes', ->
+    describe 'adding a graph and nodes', ->
       it 'should provide the nodes back', (done) ->
         expects = [
             protocol: 'graph'
@@ -98,7 +98,7 @@ describe 'WebSocket network runtime', ->
           main: true
         send 'graph', 'addnode', expects[1].payload
         send 'graph', 'addnode', expects[2].payload
-    describe 'receiving an edge', ->
+    describe 'adding an edge', ->
       it 'should provide the edge back', (done) ->
         expects = [
           protocol: 'graph'
@@ -116,7 +116,73 @@ describe 'WebSocket network runtime', ->
         ]
         receive expects, done
         send 'graph', 'addedge', expects[0].payload
-    describe 'receiving an IIP', ->
+    describe 'adding metadata', ->
+      describe 'to a node with no metadata', ->
+        it 'should add the metadata', (done) ->
+          expects = [
+            protocol: 'graph'
+            command: 'changenode'
+            payload:
+              id: 'Bar'
+              metadata:
+                sort: 1
+              graph: 'foo'
+          ]
+          receive expects, done
+          send 'graph', 'changenode', expects[0].payload
+      describe 'to a node with existing metadata', ->
+        it 'should merge the metadata', (done) ->
+          expects = [
+            protocol: 'graph'
+            command: 'changenode'
+            payload:
+              id: 'Bar'
+              metadata:
+                sort: 1
+                tag: 'awesome'
+              graph: 'foo'
+          ]
+          receive expects, done
+          send 'graph', 'changenode',
+            id: 'Bar'
+            metadata:
+              tag: 'awesome'
+            graph: 'foo'
+      describe 'with no keys to a node with existing metadata', ->
+        it 'should not change the metadata', (done) ->
+          expects = [
+            protocol: 'graph'
+            command: 'changenode'
+            payload:
+              id: 'Bar'
+              metadata:
+                sort: 1
+                tag: 'awesome'
+              graph: 'foo'
+          ]
+          receive expects, done
+          send 'graph', 'changenode',
+            id: 'Bar'
+            metadata: {}
+            graph: 'foo'
+      describe 'will a null value removes it from the node', ->
+        it 'should merge the metadata', (done) ->
+          expects = [
+            protocol: 'graph'
+            command: 'changenode'
+            payload:
+              id: 'Bar'
+              metadata: {}
+              graph: 'foo'
+          ]
+          receive expects, done
+          send 'graph', 'changenode',
+            id: 'Bar'
+            metadata:
+              sort: null
+              tag: null
+            graph: 'foo'
+    describe 'adding an IIP', ->
       it 'should provide the IIP back', (done) ->
         expects = [
           protocol: 'graph'
@@ -211,14 +277,42 @@ describe 'WebSocket network runtime', ->
             graph: 'foo'
         ]
         receive expects, done
-        send 'graph', 'renamenode',
-          from: 'Foo'
-          to: 'Baz'
-          graph: 'foo'
+        send 'graph', 'renamenode', expects[0].payload
+    describe 'adding a node to a non-existent graph', ->
+      it 'should send an error', (done) ->
+        expects = [
+          protocol: 'graph',
+          command: 'error',
+          payload:
+            message: 'Requested graph not found'
+        ]
+        receive expects, done
+        send 'graph', 'addnode',
+          id: 'Foo'
+          component: 'core/Repeat'
+          graph: 'another-graph'
+    describe 'adding a node without specifying a graph', ->
+      it 'should send an error', (done) ->
+        expects = [
+          protocol: 'graph',
+          command: 'error',
+          payload:
+            message: 'No graph specified'
+        ]
+        receive expects, done
+        send 'graph', 'addnode',
+          id: 'Foo'
+          component: 'core/Repeat'
+    # TODO:
+    # ports:
+    #   addinport / removeinport / renameinport
+    #   addoutport / removeoutport / renameoutport
+    # groups:
+    #   addgroup / removegroup / renamegroup / changegroup
 
   describe 'Network protocol', ->
     # Set up a clean graph
-    beforeEach (done) ->
+    before (done) ->
       waitFor = 4
       listener = (message) ->
         waitFor--
@@ -256,6 +350,20 @@ describe 'WebSocket network runtime', ->
           node: 'Hello'
           port: 'in'
         graph: 'bar'
+    # getstatus does not return a status when the network has not been started: seems like a bug
+    # describe "on requesting a graph's status", ->
+    #   it 'should provide the status', (done) ->
+    #     expects = [
+    #       protocol: 'network'
+    #       command: 'status'
+    #       payload:
+    #         graph: 'bar'
+    #         running: false
+    #         started: false
+    #     ]
+    #     receive expects, done
+    #     send 'network', 'getstatus',
+    #       graph: 'bar'
     describe 'on starting the network', ->
       it 'should get started', (done) ->
         listener = (message) ->
@@ -269,11 +377,55 @@ describe 'WebSocket network runtime', ->
               chai.expect(msg.payload).to.be.an 'object'
               chai.expect(msg.payload.graph).to.equal 'bar'
               chai.expect(msg.payload.time).to.be.a 'string'
+              chai.expect(msg.payload.running).to.equal true
+              chai.expect(msg.payload.started).to.equal true
               done()
         connection.once 'message', listener
         send 'network', 'start',
           graph: 'bar'
-
+      it "should provide a 'started' status", (done) ->
+        expects = [
+          protocol: 'network'
+          command: 'status'
+          payload:
+            graph: 'bar'
+            running: false
+            started: true
+        ]
+        receive expects, done
+        send 'network', 'getstatus',
+          graph: 'bar'
+    describe 'on stopping the network', ->
+      it 'should be stopped', (done) ->
+        listener = (message) ->
+          check done, ->
+            chai.expect(message.utf8Data).to.be.a 'string'
+            msg = JSON.parse message.utf8Data
+            chai.expect(msg.protocol).to.equal 'network'
+            unless msg.command is 'stopped'
+              connection.once 'message', listener
+            else
+              chai.expect(msg.payload).to.be.an 'object'
+              chai.expect(msg.payload.graph).to.equal 'bar'
+              chai.expect(msg.payload.time).to.be.a 'string'
+              chai.expect(msg.payload.running).to.equal false
+              chai.expect(msg.payload.started).to.equal false
+              done()
+        connection.once 'message', listener
+        send 'network', 'stop',
+          graph: 'bar'
+      it "should provide a 'stopped' status", (done) ->
+        expects = [
+          protocol: 'network'
+          command: 'status'
+          payload:
+            graph: 'bar'
+            running: false
+            started: false
+        ]
+        receive expects, done
+        send 'network', 'getstatus',
+          graph: 'bar'
     describe 'on console output', ->
       it 'should be able to capture and transmit it', (done) ->
         listener = (message) ->
@@ -299,6 +451,7 @@ describe 'WebSocket network runtime', ->
             msg = JSON.parse message.utf8Data
             chai.expect(msg.protocol).to.equal 'component'
             chai.expect(msg.payload).to.be.an 'object'
+            # core/Output is the last component in the list
             unless msg.payload.name is 'core/Output'
               connection.once 'message', listener
             else
@@ -315,6 +468,7 @@ describe 'WebSocket network runtime', ->
                 addressable: false
                 description: 'Options to be passed to console.log'
               ]
+              # order matters
               chai.expect(msg.payload.inPorts).to.eql expectedInPorts
               chai.expect(msg.payload.outPorts).to.eql [
                 id: 'out'
@@ -325,3 +479,6 @@ describe 'WebSocket network runtime', ->
               done()
         connection.once 'message', listener
         send 'component', 'list', process.cwd()
+
+    # TODO:
+    # getsource => source
