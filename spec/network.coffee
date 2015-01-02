@@ -41,6 +41,18 @@ describe 'WebSocket network runtime', ->
         chai.expect(message.utf8Data).to.be.a 'string'
         msg = JSON.parse message.utf8Data
         expected = expects.shift()
+        if expected.payload
+          for key, value of expected.payload
+            if value is String
+              chai.expect(msg.payload).to.exist
+              chai.expect(msg.payload[key]).to.be.a 'string'
+              delete expected.payload[key]
+              delete msg.payload[key]
+            if value is Number
+              chai.expect(msg.payload).to.exist
+              chai.expect(msg.payload[key]).to.be.a 'number'
+              delete expected.payload[key]
+              delete msg.payload[key]
         chai.expect(msg).to.eql expected
         if expects.length
           connection.once 'message', listener
@@ -365,22 +377,67 @@ describe 'WebSocket network runtime', ->
     #     send 'network', 'getstatus',
     #       graph: 'bar'
     describe 'on starting the network', ->
-      it 'should get started', (done) ->
-        listener = (message) ->
-          check done, ->
-            chai.expect(message.utf8Data).to.be.a 'string'
-            msg = JSON.parse message.utf8Data
-            chai.expect(msg.protocol).to.equal 'network'
-            unless msg.command is 'started'
-              connection.once 'message', listener
-            else
-              chai.expect(msg.payload).to.be.an 'object'
-              chai.expect(msg.payload.graph).to.equal 'bar'
-              chai.expect(msg.payload.time).to.be.a 'string'
-              chai.expect(msg.payload.running).to.equal true
-              chai.expect(msg.payload.started).to.equal true
-              done()
-        connection.once 'message', listener
+      it 'should process the nodes and stop when it completes', (done) ->
+        # send 'network', 'debug',
+        #   graph: 'bar'
+        #   enable: true
+        expects = [
+          protocol: 'network'
+          command: 'started'
+          payload:
+            graph: 'bar'
+            started: true
+            running: true
+            time: String
+        ,
+          protocol: 'network'
+          command: 'connect'
+          payload: 
+             id: 'DATA -> IN Hello()'
+             graph: 'bar'
+             tgt: { node: 'Hello', port: 'in' }
+        ,
+          protocol: 'network'
+          command: 'data'
+          payload: 
+             id: 'DATA -> IN Hello()'
+             graph: 'bar'
+             tgt: { node: 'Hello', port: 'in' }
+             data: 'Hello, world!'
+        ,
+          protocol: 'network'
+          command: 'connect'
+          payload: 
+             id: 'Hello() OUT -> IN World()'
+             graph: 'bar'
+             src: { node: 'Hello', port: 'out' }
+             tgt: { node: 'World', port: 'in' }
+        ,
+          protocol: 'network'
+          command: 'data'
+          payload: 
+             id: 'Hello() OUT -> IN World()'
+             graph: 'bar'
+             src: { node: 'Hello', port: 'out' }
+             tgt: { node: 'World', port: 'in' }
+             data: 'Hello, world!'
+        ,
+          protocol: 'network'
+          command: 'disconnect'
+          payload: 
+             id: 'DATA -> IN Hello()'
+             graph: 'bar'
+             tgt: { node: 'Hello', port: 'in' }
+        ,
+          protocol: 'network'
+          command: 'disconnect'
+          payload: 
+             id: 'Hello() OUT -> IN World()'
+             graph: 'bar'
+             src: { node: 'Hello', port: 'out' }
+             tgt: { node: 'World', port: 'in' }
+        ]
+        receive expects, done
         send 'network', 'start',
           graph: 'bar'
       it "should provide a 'started' status", (done) ->
@@ -397,21 +454,17 @@ describe 'WebSocket network runtime', ->
           graph: 'bar'
     describe 'on stopping the network', ->
       it 'should be stopped', (done) ->
-        listener = (message) ->
-          check done, ->
-            chai.expect(message.utf8Data).to.be.a 'string'
-            msg = JSON.parse message.utf8Data
-            chai.expect(msg.protocol).to.equal 'network'
-            unless msg.command is 'stopped'
-              connection.once 'message', listener
-            else
-              chai.expect(msg.payload).to.be.an 'object'
-              chai.expect(msg.payload.graph).to.equal 'bar'
-              chai.expect(msg.payload.time).to.be.a 'string'
-              chai.expect(msg.payload.running).to.equal false
-              chai.expect(msg.payload.started).to.equal false
-              done()
-        connection.once 'message', listener
+        expects = [
+          protocol: 'network'
+          command: 'stopped'
+          payload:
+            graph: 'bar'
+            started: false
+            running: false
+            time: String
+            uptime: Number
+        ]
+        receive expects, done
         send 'network', 'stop',
           graph: 'bar'
       it "should provide a 'stopped' status", (done) ->
