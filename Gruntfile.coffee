@@ -5,19 +5,16 @@ module.exports = ->
 
     # Automated recompilation and testing when developing
     watch:
-      files: ['spec/*.coffee', 'runtime/*.js']
+      files: ['runtime/*.js']
       tasks: ['test']
 
-    # BDD tests on Node.js
-    cafemocha:
-      nodejs:
-        src: ['spec/*.coffee']
-        options:
-          reporter: 'spec'
+    # FBP Network Protocol tests
+    exec:
+      fbp_test: 'fbp-test --colors'
 
   # Grunt plugins used for testing
   @loadNpmTasks 'grunt-contrib-watch'
-  @loadNpmTasks 'grunt-cafe-mocha'
+  @loadNpmTasks 'grunt-exec'
 
-  @registerTask 'test', ['cafemocha']
+  @registerTask 'test', ['exec']
   @registerTask 'default', ['test']

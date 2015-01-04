@@ -1,0 +1,7 @@
+{
+  "name": "noflo-nodejs",
+  "command": "./bin/noflo-websocket-runtime",
+  "host": "localhost",
+  "port": 8080,
+  "collection": "core"
+}
