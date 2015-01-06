@@ -18,7 +18,8 @@
   ],
   "dependencies": {
     "noflo-runtime-base": "~0.2.4",
-    "websocket": "~1.0.8"
+    "websocket": "~1.0.8",
+    "commander": "^2.1.0"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
@@ -26,7 +27,7 @@
     "grunt-contrib-watch": "~0.6.1",
     "noflo-core": "~0.1.5",
     "coffee-script": "^1.7.1",
-    "fbp-protocol": "~0.1.0"
+    "fbp-protocol": "~0.1.2"
   },
   "main": "./runtime/network.js",
   "scripts": {
