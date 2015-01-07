@@ -1,0 +1,26 @@
+#!/usr/bin/env node
+// vim: set filetype=javascript:
+var program = require('commander');
+var http = require('http');
+var path = require('path');
+var runtime = require('../runtime/network');
+
+program
+  .option('--host <hostname>', 'Host', String, 'localhost')
+  .option('--port <port>', 'Port', Number, 8080)
+  .parse(process.argv);
+
+var baseDir = process.env.PROJECT_HOME || process.cwd();
+
+var server = http.createServer(function () {});
+var rt = runtime(server, {
+  baseDir: baseDir,
+  captureOutput: false,
+  catchExceptions: true
+});
+
+server.listen(program.port, function () {
+  var address = 'ws://' + program.host + ':' + program.port;
+  console.log('NoFlo runtime listening at ' + address);
+  console.log('Using ' + baseDir + ' for component loading');
+});

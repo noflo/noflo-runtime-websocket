@@ -1,0 +1,7 @@
+{
+  "name": "noflo-nodejs",
+  "command": null,
+  "host": "localhost",
+  "port": 8080,
+  "collection": "core"
+}

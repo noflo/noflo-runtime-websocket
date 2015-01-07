@@ -11,11 +11,12 @@ environment:
 install:
   - ps: Update-NodeJsInstallation (Get-NodeJsLatestBuild $env:nodejs_version)
   - npm install -g grunt-cli
+  - npm install -g fbp-protocol
   - npm install
   - npm build
 
 build: off
-  
+
 test_script:
   - node --version
   - npm --version
