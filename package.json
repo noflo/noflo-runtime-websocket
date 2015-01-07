@@ -23,11 +23,12 @@
   },
   "devDependencies": {
     "grunt": "~0.4.1",
-    "grunt-exec": "~0.4.6",
+    // this has a fix for subprocess killing on windows
+    "grunt-shell-spawn": "sergkr/grunt-shell-spawn",
     "grunt-contrib-watch": "~0.6.1",
     "noflo-core": "~0.1.5",
     "coffee-script": "^1.7.1",
-    "fbp-protocol": "~0.1.5"
+    "fbp-protocol": "~0.1.6"
   },
   "main": "./runtime/network.js",
   "scripts": {
