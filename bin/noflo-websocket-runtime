@@ -12,19 +12,15 @@ program
 
 var baseDir = process.env.PROJECT_HOME || process.cwd();
 
-var startServer = function(defaultGraph) {
-  var server = http.createServer(function () {});
-  var rt = runtime(server, {
-    defaultGraph: defaultGraph,
-    baseDir: baseDir,
-    captureOutput: false,
-    catchExceptions: true
-  });
+var server = http.createServer(function () {});
+var rt = runtime(server, {
+  baseDir: baseDir,
+  captureOutput: false,
+  catchExceptions: true
+});
 
-  server.listen(program.port, function () {
-    var address = 'ws://' + program.host + ':' + program.port;
-    console.log('NoFlo runtime listening at ' + address);
-    console.log('Using ' + baseDir + ' for component loading');
-  });
-};
-startServer(null);
+server.listen(program.port, function () {
+  var address = 'ws://' + program.host + ':' + program.port;
+  console.log('NoFlo runtime listening at ' + address);
+  console.log('Using ' + baseDir + ' for component loading');
+});
