@@ -23,7 +23,6 @@
   },
   "devDependencies": {
     "grunt": "~0.4.1",
-    // this has a fix for subprocess killing on windows
     "grunt-shell-spawn": "sergkr/grunt-shell-spawn",
     "grunt-contrib-watch": "~0.6.1",
     "noflo-core": "~0.1.5",
