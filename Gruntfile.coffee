@@ -15,7 +15,7 @@ module.exports = ->
         options:
           async: true
       fbp_test:
-        command: 'fbp-test --colors'
+        command: './node_modules/.bin/fbp-test --colors'
 
   # Grunt plugins used for testing
   @loadNpmTasks 'grunt-contrib-watch'
