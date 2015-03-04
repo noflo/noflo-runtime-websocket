@@ -90,6 +90,7 @@ module.exports = function (httpServer, options) {
       try {
         contents = JSON.parse(message.utf8Data);
       } catch (e) {
+        console.error('Error: ' + e.message);
         return;
       }
       runtime.receive(contents.protocol, contents.command, contents.payload, {
