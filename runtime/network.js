@@ -24,6 +24,8 @@ function WebSocketRuntime (options) {
 
   this.prototype.constructor.apply(this, arguments);
   this.receive = this.prototype.receive;
+  this.canDo = this.prototype.canDo;
+  this.getPermitted = this.prototype.getPermitted;
 }
 WebSocketRuntime.prototype = Base;
 WebSocketRuntime.prototype.send = function (protocol, topic, payload, context) {
