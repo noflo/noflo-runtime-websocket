@@ -23,7 +23,7 @@ var rt = runtime(server, {
 
 server.listen(program.port, function () {
   var address = 'ws://' + program.host + ':' + program.port;
-  console.log('NoFlo runtime listening at ' + address);
+  console.log('NoFlo runtime ' + rt.version + ' listening at ' + address);
   console.log('Using ' + baseDir + ' for component loading');
   console.log('Default permissions are ' + rt.getPermitted().join(', '));
 });
