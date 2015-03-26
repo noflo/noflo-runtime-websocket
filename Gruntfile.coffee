@@ -10,10 +10,6 @@ module.exports = ->
 
     # FBP Network Protocol tests
     shell:
-      runtime:
-        command: 'node bin/noflo-websocket-runtime'
-        options:
-          async: true
       fbp_test:
         command: './node_modules/.bin/fbp-test --colors'
 
@@ -21,5 +17,5 @@ module.exports = ->
   @loadNpmTasks 'grunt-contrib-watch'
   @loadNpmTasks 'grunt-shell-spawn'
 
-  @registerTask 'test', ['shell:runtime', 'shell:fbp_test', 'shell:runtime:kill']
+  @registerTask 'test', ['shell:fbp_test']
   @registerTask 'default', ['test']

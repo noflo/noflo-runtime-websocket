@@ -1,7 +1,7 @@
 {
   "name": "noflo-runtime-websocket",
   "description": "NoFlo runtime for execution on Node.js over WebSockets",
-  "version": "0.2.5",
+  "version": "0.5.0",
   "author": {
     "name": "Henri Bergius",
     "email": "henri.bergius@iki.fi"
@@ -17,7 +17,7 @@
     }
   ],
   "dependencies": {
-    "noflo-runtime-base": "~0.2.4",
+    "noflo-runtime-base": "~0.5.0",
     "websocket": "~1.0.8",
     "commander": "^2.1.0"
   },
@@ -27,7 +27,7 @@
     "grunt-contrib-watch": "~0.6.1",
     "noflo-core": "~0.1.5",
     "coffee-script": "^1.7.1",
-    "fbp-protocol": "~0.1.6"
+    "fbp-protocol": "git://github.com/flowbased/fbp-protocol.git"
   },
   "main": "./runtime/network.js",
   "scripts": {
