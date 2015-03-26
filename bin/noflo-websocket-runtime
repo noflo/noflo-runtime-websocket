@@ -8,6 +8,7 @@ var runtime = require('../runtime/network');
 program
   .option('--host <hostname>', 'Host', String, 'localhost')
   .option('--port <port>', 'Port', Number, 8080)
+  .option('--permissions <permissions>', 'Permissions', String, 'protocol:component,protocol:runtime,protocol:graph,protocol:network,component:getsource,component:setsource')
   .parse(process.argv);
 
 var baseDir = process.env.PROJECT_HOME || process.cwd();
@@ -16,11 +17,13 @@ var server = http.createServer(function () {});
 var rt = runtime(server, {
   baseDir: baseDir,
   captureOutput: false,
-  catchExceptions: true
+  catchExceptions: true,
+  defaultPermissions: program.permissions.split(',')
 });
 
 server.listen(program.port, function () {
   var address = 'ws://' + program.host + ':' + program.port;
   console.log('NoFlo runtime listening at ' + address);
   console.log('Using ' + baseDir + ' for component loading');
+  console.log('Default permissions are ' + rt.getPermitted().join(', '));
 });
