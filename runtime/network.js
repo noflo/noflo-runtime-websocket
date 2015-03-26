@@ -14,6 +14,11 @@ function WebSocketRuntime (server, options) {
         }, {
           connection: connection
         });
+        if (err.stack) {
+          console.error(err.stack);
+        } else {
+          console.error('Error: ' + err.toString());
+        }
       }.bind(this));
     }.bind(this));
   }
@@ -92,7 +97,11 @@ module.exports = function (httpServer, options) {
       try {
         contents = JSON.parse(message.utf8Data);
       } catch (e) {
-        console.error('Error: ' + e.message);
+        if (e.stack) {
+          console.error(e.stack);
+        } else {
+          console.error('Error: ' + e.toString());
+        }
         return;
       }
       runtime.receive(contents.protocol, contents.command, contents.payload, {
