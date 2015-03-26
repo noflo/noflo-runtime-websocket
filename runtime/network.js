@@ -1,7 +1,7 @@
 var WebSocketServer = require('websocket').server;
 var Base = require('noflo-runtime-base');
 
-function WebSocketRuntime (options) {
+function WebSocketRuntime (server, options) {
   if (!options) {
     options = {};
   }
