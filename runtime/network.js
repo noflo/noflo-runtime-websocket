@@ -27,7 +27,7 @@ function WebSocketRuntime (server, options) {
     this.startCapture();
   }
 
-  this.prototype.constructor.apply(this, arguments);
+  this.prototype.constructor.apply(this, [options]);
   this.receive = this.prototype.receive;
   this.canDo = this.prototype.canDo;
   this.getPermitted = this.prototype.getPermitted;
