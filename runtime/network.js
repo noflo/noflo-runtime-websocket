@@ -1,7 +1,7 @@
 var WebSocketServer = require('websocket').server;
 var Base = require('noflo-runtime-base');
 
-function WebSocketRuntime (server, options) {
+function WebSocketRuntime (options) {
   if (!options) {
     options = {};
   }
@@ -26,8 +26,7 @@ function WebSocketRuntime (server, options) {
   if (options.captureOutput) {
     this.startCapture();
   }
-
-  this.prototype.constructor.apply(this, [options]);
+  this.prototype.constructor.apply(this, arguments);
   this.receive = this.prototype.receive;
   this.canDo = this.prototype.canDo;
   this.getPermitted = this.prototype.getPermitted;
