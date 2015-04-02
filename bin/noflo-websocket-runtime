@@ -8,17 +8,27 @@ var runtime = require('../runtime/network');
 program
   .option('--host <hostname>', 'Host', String, 'localhost')
   .option('--port <port>', 'Port', Number, 8080)
+  .option('--secret <secret>', 'Secret string', String)
   .option('--permissions <permissions>', 'Permissions', String, 'protocol:component,protocol:runtime,protocol:graph,protocol:network,component:getsource,component:setsource')
   .parse(process.argv);
 
 var baseDir = process.env.PROJECT_HOME || process.cwd();
 
 var server = http.createServer(function () {});
+
+var permissions = {};
+var defaultPermissions = program.permissions.split(',')
+if (program.secret) {
+  permissions[program.secret] = defaultPermissions;
+  defaultPermissions = [];
+}
+
 var rt = runtime(server, {
   baseDir: baseDir,
   captureOutput: false,
   catchExceptions: true,
-  defaultPermissions: program.permissions.split(',')
+  permissions: permissions,
+  defaultPermissions: defaultPermissions
 });
 
 server.listen(program.port, function () {
