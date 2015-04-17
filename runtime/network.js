@@ -38,7 +38,8 @@ WebSocketRuntime.prototype.send = function (protocol, topic, payload, context) {
   }
   if (topic === 'error' && payload instanceof Error) {
     payload = {
-      message: payload.message
+      message: payload.message,
+      stack: payload.stack
     };
   }
   context.connection.sendUTF(JSON.stringify({
@@ -52,7 +53,8 @@ WebSocketRuntime.prototype.sendAll = function (protocol, topic, payload, context
 
   if (topic === 'error' && payload instanceof Error) {
     payload = {
-      message: payload.message
+      message: payload.message,
+      stack: payload.stack
     };
   }
   this.connections.forEach(function(connection) {
