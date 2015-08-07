@@ -9,13 +9,13 @@ module.exports = ->
       tasks: ['test']
 
     # FBP Network Protocol tests
-    shell:
+    exec:
       fbp_test:
         command: './node_modules/.bin/fbp-test --colors'
 
   # Grunt plugins used for testing
   @loadNpmTasks 'grunt-contrib-watch'
-  @loadNpmTasks 'grunt-shell-spawn'
+  @loadNpmTasks 'grunt-exec'
 
-  @registerTask 'test', ['shell:fbp_test']
+  @registerTask 'test', ['exec:fbp_test']
   @registerTask 'default', ['test']

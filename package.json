@@ -22,12 +22,12 @@
     "commander": "^2.1.0"
   },
   "devDependencies": {
-    "grunt": "~0.4.1",
-    "grunt-shell-spawn": "sergkr/grunt-shell-spawn",
-    "grunt-contrib-watch": "~0.6.1",
-    "noflo-core": "~0.1.5",
     "coffee-script": "^1.7.1",
-    "fbp-protocol": "git://github.com/flowbased/fbp-protocol.git"
+    "fbp-protocol": "git://github.com/flowbased/fbp-protocol.git",
+    "grunt": "~0.4.1",
+    "grunt-contrib-watch": "~0.6.1",
+    "grunt-exec": "^0.4.6",
+    "noflo-core": "~0.1.5"
   },
   "main": "./runtime/network.js",
   "scripts": {
