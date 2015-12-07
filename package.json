@@ -17,7 +17,7 @@
     }
   ],
   "dependencies": {
-    "noflo-runtime-base": "0.5.6",
+    "noflo-runtime-base": "0.6.4",
     "websocket": "1.0.22",
     "commander": "2.8.1"
   },
