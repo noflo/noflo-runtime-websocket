@@ -19,7 +19,7 @@
   "dependencies": {
     "noflo-runtime-base": "0.5.6",
     "websocket": "1.0.22",
-    "commander": "2.8.1"
+    "commander": "2.9.0"
   },
   "devDependencies": {
     "coffee-script": "1.10.0",
