@@ -1,7 +1,7 @@
 {
   "name": "noflo-runtime-websocket",
   "description": "NoFlo runtime for execution on Node.js over WebSockets",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "author": {
     "name": "Henri Bergius",
     "email": "henri.bergius@iki.fi"
