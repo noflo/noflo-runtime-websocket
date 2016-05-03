@@ -12,18 +12,18 @@
   },
   "license": "MIT",
   "dependencies": {
-    "noflo-runtime-base": "0.7.1",
-    "websocket": "1.0.22",
-    "commander": "2.9.0"
+    "noflo-runtime-base": "~0.7.1",
+    "websocket": "~1.0.22",
+    "commander": "~2.9.0"
   },
   "devDependencies": {
-    "coffee-script": "1.10.0",
-    "fbp-protocol": "0.2.1",
-    "grunt": "0.4.5",
-    "grunt-contrib-watch": "1.0.0",
-    "grunt-exec": "0.4.6",
+    "coffee-script": "^1.10.0",
+    "fbp-protocol": "^0.2.1",
+    "grunt": "^0.4.5",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-exec": "^0.4.6",
     "mocha": "^2.4.5",
-    "noflo-core": "0.1.14"
+    "noflo-core": "^0.1.14"
   },
   "main": "./runtime/network.js",
   "scripts": {
