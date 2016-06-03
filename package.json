@@ -23,7 +23,7 @@
     "grunt-contrib-watch": "^1.0.0",
     "grunt-exec": "^0.4.6",
     "mocha": "^2.4.5",
-    "noflo-core": "^0.1.14"
+    "noflo-core": "^0.2.1"
   },
   "main": "./runtime/network.js",
   "scripts": {
