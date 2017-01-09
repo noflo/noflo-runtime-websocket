@@ -16,6 +16,9 @@
     "websocket": "~1.0.22",
     "commander": "~2.9.0"
   },
+  "keywords": [
+    "noflo"
+  ],
   "devDependencies": {
     "coffee-script": "^1.12.1",
     "fbp-protocol": "^0.2.1",
