@@ -52,19 +52,11 @@ WebSocketRuntime.prototype.send = function (protocol, topic, payload, context) {
 
 WebSocketRuntime.prototype.sendAll = function (protocol, topic, payload, context) {
 
-  if (topic === 'error' && payload instanceof Error) {
-    payload = {
-      message: payload.message,
-      stack: payload.stack
-    };
-  }
   this.connections.forEach(function(connection) {
-    connection.sendUTF(JSON.stringify({
-        protocol: protocol,
-        command: topic,
-        payload: payload
-    }));
-  });
+    this.send(protocol, topic, payload, {
+      connection: connection
+    });
+  }.bind(this));
 };
 
 WebSocketRuntime.prototype.startCapture = function () {
