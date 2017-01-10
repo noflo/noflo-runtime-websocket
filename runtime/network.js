@@ -47,6 +47,7 @@ WebSocketRuntime.prototype.send = function (protocol, topic, payload, context) {
     command: topic,
     payload: payload
   }));
+  this.prototype.send.apply(this, arguments);
 };
 
 WebSocketRuntime.prototype.sendAll = function (protocol, topic, payload, context) {
