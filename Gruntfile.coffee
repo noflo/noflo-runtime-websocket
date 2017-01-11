@@ -11,7 +11,7 @@ module.exports = ->
     # FBP Network Protocol tests
     exec:
       fbp_test:
-        command: './node_modules/.bin/fbp-test --colors'
+        command: 'FBP_PROTOCOL_SECRET=foo ./node_modules/.bin/fbp-test --colors'
 
   # Grunt plugins used for testing
   @loadNpmTasks 'grunt-contrib-watch'

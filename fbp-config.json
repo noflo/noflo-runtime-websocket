@@ -1,6 +1,6 @@
 {
   "name": "noflo-nodejs",
-  "command": "node bin/noflo-websocket-runtime",
+  "command": "node bin/noflo-websocket-runtime --secret=foo",
   "host": "localhost",
   "port": 8080,
   "collection": "core",
