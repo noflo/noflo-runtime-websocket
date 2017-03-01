@@ -8,7 +8,7 @@ deploy:
   provider: npm
   email: henri.bergius@iki.fi
   api_key:
-    secure: FE1vktfVeva4dSM4DhDtKQpuskunzgurATeYWfNjyhotYivmeuP0p8tT5RNlrBsFugQWY72oLgMTycY/3ILAFpd3I/+j1OAkB2IPdippD6ocW9f92y6GRx0h8aVsUDTuh9WGHJIeQzZ+D1Z+WfpgGt92lOFjgiSK7A4300p1YII=
+    secure: HyvA8wLP2tzFJfzXfYY1jVbK8KG20Uhw5DAdDCQ8x9NaNTzBeAMCPbwn7ufswrGVkGsUY1Epvokb536oIjQpQrjptf2DJljjhARsANtiqFNDdKVWCB+Oxy8emBEpn3bYZtEY6THPnxHJr3Rlz0J/jgJq5h9uzfQ4GVEAwiuKNiI=
   on:
     tags: true
     repo: noflo/noflo-runtime-websocket
