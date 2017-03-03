@@ -12,7 +12,7 @@ module.exports = ->
     # FBP Network Protocol tests
     exec:
       fbp_test:
-        command: "node #{path.resolve(__dirname, 'node_modules/.bin/fbp-test')} --colors"
+        command: "#{path.resolve(__dirname, 'node_modules/.bin/fbp-test')} --colors"
         options:
           env:
             FBP_PROTOCOL_SECRET: 'foo'
