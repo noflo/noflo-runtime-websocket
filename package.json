@@ -20,7 +20,7 @@
     "noflo"
   ],
   "devDependencies": {
-    "coffee-script": "^1.12.1",
+    "coffee-script": "1.12.5",
     "fbp-protocol": "^0.8.0",
     "grunt": "^1.0.1",
     "grunt-contrib-watch": "^1.0.0",
