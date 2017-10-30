@@ -34,7 +34,7 @@ WebSocketRuntime.prototype.send = function (protocol, topic, payload, context) {
   if (!context.connection || !context.connection.connected) {
     return;
   }
-  if (topic === 'error' && payload instanceof Error) {
+  if (payload instanceof Error) {
     payload = {
       message: payload.message,
       stack: payload.stack
