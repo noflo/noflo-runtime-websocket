@@ -9,9 +9,7 @@ function WebSocketRuntime (options) {
   if (options.catchExceptions) {
     process.on('uncaughtException', function (err) {
       this.connections.forEach(function (connection) {
-        this.send('network', 'error', {
-          message: err.toString()
-        }, {
+        this.send('network', 'error', err, {
           connection: connection
         });
         if (err.stack) {
@@ -36,7 +34,7 @@ WebSocketRuntime.prototype.send = function (protocol, topic, payload, context) {
   if (!context.connection || !context.connection.connected) {
     return;
   }
-  if (topic === 'error' && payload instanceof Error) {
+  if (payload instanceof Error) {
     payload = {
       message: payload.message,
       stack: payload.stack
