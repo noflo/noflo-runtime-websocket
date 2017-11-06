@@ -6,18 +6,18 @@ class WebSocketRuntime extends Base {
     super(options);
     this.connections = [];
     if (options.catchExceptions) {
-      process.on('uncaughtException', function (err) {
-        this.connections.forEach(function (connection) {
+      process.on('uncaughtException', (err) => {
+        this.connections.forEach((connection) => {
           this.send('network', 'error', err, {
-            connection: connection
+            connection,
           });
           if (err.stack) {
             console.error(err.stack);
           } else {
-            console.error('Error: ' + err.toString());
+            console.error(`Error: ${err.toString()}`);
           }
-        }.bind(this));
-      }.bind(this));
+        });
+      });
     }
 
     if (options.captureOutput) {
@@ -29,39 +29,40 @@ class WebSocketRuntime extends Base {
     if (!context.connection || !context.connection.connected) {
       return;
     }
+    let normalizedPayload = payload;
     if (payload instanceof Error) {
-      payload = {
+      normalizedPayload = {
         message: payload.message,
-        stack: payload.stack
+        stack: payload.stack,
       };
     }
     context.connection.sendUTF(JSON.stringify({
-      protocol: protocol,
+      protocol,
       command: topic,
-      payload: payload
+      normalizedPayload,
     }));
     super.send(protocol, topic, payload, context);
   }
 
-  sendAll(protocol, topic, payload, context) {
+  sendAll(protocol, topic, payload) {
     this.connections.forEach((connection) => {
       this.send(protocol, topic, payload, {
-        connection: connection
+        connection,
       });
     });
   }
 
   startCapture() {
     this.originalStdOut = process.stdout.write;
-    process.stdout.write = function (string, encoding, fd) {
+    process.stdout.write = (string) => {
       this.connections.forEach(function (connection) {
         this.send('network', 'output', {
-          message: string.replace(/\n$/, '')
+          message: string.replace(/\n$/, ''),
         }, {
-          connection: connection
+          connection,
         });
-      }.bind(this));
-    }.bind(this);
+      });
+    };
   }
 
   stopCapture() {
@@ -74,12 +75,12 @@ class WebSocketRuntime extends Base {
 
 module.exports = function (httpServer, options) {
   const wsServer = new WebSocketServer({
-    httpServer: httpServer
+    httpServer,
   });
 
   const runtime = new WebSocketRuntime(options);
   const handleMessage = function (message, connection) {
-    if (message.type == 'utf8') {
+    if (message.type === 'utf8') {
       let contents;
       try {
         contents = JSON.parse(message.utf8Data);
@@ -87,24 +88,24 @@ module.exports = function (httpServer, options) {
         if (e.stack) {
           console.error(e.stack);
         } else {
-          console.error('Error: ' + e.toString());
+          console.error(`Error: ${e.toString()}`);
         }
         return;
       }
       runtime.receive(contents.protocol, contents.command, contents.payload, {
-        connection: connection
+        connection,
       });
     }
   };
 
-  wsServer.on('request', function (request) {
-    const subProtocol = (request.requestedProtocols.indexOf("noflo") != -1) ? "noflo" : null;
+  wsServer.on('request', (request) => {
+    const subProtocol = (request.requestedProtocols.indexOf('noflo') !== -1) ? 'noflo' : null;
     const connection = request.accept(subProtocol, request.origin);
     runtime.connections.push(connection);
-    connection.on('message', function (message) {
+    connection.on('message', (message) => {
       handleMessage(message, connection);
     });
-    connection.on('close', function () {
+    connection.on('close', () => {
       if (runtime.connections.indexOf(connection) === -1) {
         return;
       }
