@@ -39,7 +39,7 @@ class WebSocketRuntime extends Base {
     context.connection.sendUTF(JSON.stringify({
       protocol,
       command: topic,
-      normalizedPayload,
+      payload: normalizedPayload,
     }));
     super.send(protocol, topic, payload, context);
   }
