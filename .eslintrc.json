@@ -1,0 +1,10 @@
+{
+  "extends": "airbnb-base",
+  "rules": {
+    "func-names": 0,
+    "prefer-arrow-callback": 1
+  },
+  "globals": {
+    "fetch": false
+  }
+}
