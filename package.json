@@ -21,6 +21,7 @@
   ],
   "devDependencies": {
     "coffee-script": "^1.12.7",
+    "coveralls": "^3.0.0",
     "eslint": "^4.10.0",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.8.0",
