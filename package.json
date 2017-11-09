@@ -34,5 +34,8 @@
   "scripts": {
     "pretest": "eslint runtime/*.js",
     "test": "grunt test"
+  },
+  "bin": {
+    "noflo-websocket-runtime": "./bin/noflo-websocket-runtime"
   }
 }
