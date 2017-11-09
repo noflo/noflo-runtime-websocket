@@ -1,6 +1,33 @@
 const { server: WebSocketServer } = require('websocket');
 const Base = require('noflo-runtime-base');
 
+function normalizePayload(payload) {
+  if (payload instanceof Error) {
+    return {
+      message: payload.message,
+      stack: payload.stack,
+    };
+  }
+  if (Buffer.isBuffer(payload)) {
+    return payload.slice(0, 20);
+  }
+  if (payload.toJSON) {
+    return payload.toJSON();
+  }
+  if (payload.toString) {
+    const stringified = payload.toString();
+    if (stringified === '[object Object]') {
+      try {
+        return JSON.parse(JSON.stringify(payload));
+      } catch (e) {
+        return stringified;
+      }
+    }
+    return stringified;
+  }
+  return payload;
+}
+
 class WebSocketRuntime extends Base {
   constructor(options = {}) {
     super(options);
@@ -25,16 +52,18 @@ class WebSocketRuntime extends Base {
     }
   }
 
+
   send(protocol, topic, payload, context) {
     if (!context.connection || !context.connection.connected) {
       return;
     }
     let normalizedPayload = payload;
     if (payload instanceof Error) {
-      normalizedPayload = {
-        message: payload.message,
-        stack: payload.stack,
-      };
+      normalizedPayload = normalizePayload(payload);
+    }
+    if (protocol === 'runtime' && topic === 'packet') {
+      // With exported port packets we need to go one deeper
+      normalizedPayload.payload = normalizePayload(normalizedPayload.payload);
     }
     context.connection.sendUTF(JSON.stringify({
       protocol,
