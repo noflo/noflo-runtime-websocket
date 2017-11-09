@@ -55,7 +55,7 @@ class WebSocketRuntime extends Base {
   startCapture() {
     this.originalStdOut = process.stdout.write;
     process.stdout.write = (string) => {
-      this.connections.forEach(function (connection) {
+      this.connections.forEach((connection) => {
         this.send('network', 'output', {
           message: string.replace(/\n$/, ''),
         }, {
