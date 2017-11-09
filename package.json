@@ -21,6 +21,7 @@
   ],
   "devDependencies": {
     "coffee-script": "^1.12.7",
+    "coveralls": "^3.0.0",
     "eslint": "^4.10.0",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.8.0",
@@ -28,12 +29,13 @@
     "grunt": "^1.0.1",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-exec": "^3.0.0",
-    "noflo-core": ">= 0.4.0"
+    "noflo-core": ">= 0.4.0",
+    "nyc": "^11.3.0"
   },
   "main": "./runtime/network.js",
   "scripts": {
     "pretest": "eslint runtime/*.js",
-    "test": "grunt test"
+    "test": "nyc grunt test"
   },
   "bin": {
     "noflo-websocket-runtime": "./bin/noflo-websocket-runtime"
