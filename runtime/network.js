@@ -2,6 +2,9 @@ const { server: WebSocketServer } = require('websocket');
 const Base = require('noflo-runtime-base');
 
 function normalizePayload(payload) {
+  if (typeof payload !== 'object' && typeof payload !== 'function') {
+    return payload;
+  }
   if (payload instanceof Error) {
     return {
       message: payload.message,
