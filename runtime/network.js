@@ -11,6 +11,9 @@ function normalizePayload(payload) {
   if (Buffer.isBuffer(payload)) {
     return payload.slice(0, 20);
   }
+  if (Array.isArray(payload)) {
+    return payload;
+  }
   if (payload.toJSON) {
     return payload.toJSON();
   }
