@@ -5,6 +5,8 @@ WebSocket implementation of [FBP protocol](https://flowbased.github.io/fbp-proto
 
 ## Changes
 
+* 0.9.2 (November 13 2017)
+  - Fixed serialization of primitive values in payloads
 * 0.9.1 (November 13 2017)
   - Improved payload normalization for errors and other non-serializable objects
   - Fixed regression with sending captured STDOUT messages
