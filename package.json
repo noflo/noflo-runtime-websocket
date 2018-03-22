@@ -12,9 +12,9 @@
   },
   "license": "MIT",
   "dependencies": {
+    "commander": "^2.15.0",
     "noflo-runtime-base": "~0.10.0",
-    "websocket": "~1.0.24",
-    "commander": "~2.15.0"
+    "websocket": "~1.0.24"
   },
   "keywords": [
     "noflo"
