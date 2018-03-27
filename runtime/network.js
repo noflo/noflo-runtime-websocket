@@ -93,6 +93,7 @@ class WebSocketRuntime extends Base {
       this.connections.forEach((connection) => {
         this.send('network', 'output', {
           message: string.replace(/\n$/, ''),
+          type: 'message',
         }, {
           connection,
         });
