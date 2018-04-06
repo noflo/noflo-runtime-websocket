@@ -60,7 +60,7 @@ class WebSocketRuntime extends Base {
 
 
   send(protocol, topic, payload, context) {
-    if (!context.connection || !context.connection.connected) {
+    if (!context || !context.connection || !context.connection.connected) {
       return;
     }
     let normalizedPayload = payload;
