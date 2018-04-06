@@ -5,6 +5,8 @@ WebSocket implementation of [FBP protocol](https://flowbased.github.io/fbp-proto
 
 ## Changes
 
+* 0.10.1 (April 6th 2018)
+  - Fixed issue on sending without context
 * 0.10.0 (March 22 2018)
   - Updated to FBP Protocol version 0.7 compatibility
 * 0.9.2 (November 13 2017)
