@@ -22,7 +22,7 @@
   "devDependencies": {
     "coffee-script": "^1.12.7",
     "coveralls": "^3.0.0",
-    "eslint": "^5.0.0",
+    "eslint": "^6.7.2",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.8.0",
     "fbp-protocol": "^0.9.1",
