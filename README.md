@@ -5,6 +5,8 @@ WebSocket implementation of [FBP protocol](https://flowbased.github.io/fbp-proto
 
 ## Changes
 
+* 0.11.0 (September 1st 2020)
+  - Updated to NoFlo's new "Network drives graph" model available in NoFlo 1.2.0
 * 0.10.1 (April 6th 2018)
   - Fixed issue on sending without context
 * 0.10.0 (March 22 2018)
