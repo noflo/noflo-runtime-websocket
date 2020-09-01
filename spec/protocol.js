@@ -16,8 +16,8 @@ describe('FBP Protocol Compatibility', () => {
     progProcess = spawn(prog, [
       `--secret=${runtimeSecret}`,
     ]);
-    progProcess.stdout.on('data', d => console.log(d.toString()));
-    progProcess.stderr.on('data', d => console.log(d.toString()));
+    progProcess.stdout.pipe(process.stdout);
+    progProcess.stderr.pipe(process.stderr);
     healthCheck(done);
   });
   after('stop runtime', (done) => {
