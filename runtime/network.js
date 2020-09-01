@@ -1,5 +1,7 @@
 const { server: WebSocketServer } = require('websocket');
 const Base = require('noflo-runtime-base');
+const debugSend = require('debug')('noflo-runtime-websocket:send');
+const debugReceive = require('debug')('noflo-runtime-websocket:receive');
 
 function normalizePayload(payload) {
   if (typeof payload !== 'object' && typeof payload !== 'function') {
@@ -71,6 +73,7 @@ class WebSocketRuntime extends Base {
       // With exported port packets we need to go one deeper
       normalizedPayload.payload = normalizePayload(normalizedPayload.payload);
     }
+    debugSend(`${protocol}:${topic}`);
     context.connection.sendUTF(JSON.stringify({
       protocol,
       command: topic,
@@ -128,6 +131,7 @@ module.exports = function (httpServer, options) {
         }
         return;
       }
+      debugReceive(`${contents.protocol}:${contents.command}`);
       runtime.receive(contents.protocol, contents.command, contents.payload, {
         connection,
       });
