@@ -12,7 +12,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "commander": "^2.15.0",
+    "commander": "^6.1.0",
     "debug": "^4.1.1",
     "noflo-runtime-base": "^0.11.0",
     "websocket": "~1.0.24"
