@@ -60,7 +60,6 @@ class WebSocketRuntime extends Base {
     }
   }
 
-
   send(protocol, topic, payload, context) {
     if (!context || !context.connection || !context.connection.connected) {
       return;
